@@ -1,0 +1,37 @@
+{
+  "name": "todotest",
+  "version": "1.0.0",
+  "description": "Coding Test",
+  "main": "index.js",
+  "engines": {
+    "node": ">=10.16.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "clear; nodemon index.js | bunyan",
+    "test": "LOG_LEVEL=fatal mocha ./test --recursive",
+    "test:coverage": "LOG_LEVEL=fatal nyc _mocha ./test --recursive"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bunyan": "^1.8.14",
+    "dotenv": "^8.2.0",
+    "es6-error": "^4.1.1",
+    "express": "^4.17.1",
+    "joi": "^14.3.1",
+    "pg": "^8.2.1",
+    "swagger-ui-express": "^4.1.4",
+    "uuid": "^8.2.0",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "chai-as-promised": "^7.1.1",
+    "randomstring": "^1.1.5",
+    "sinon": "^9.0.2",
+    "nyc": "^15.1.0",
+    "mocha": "^8.0.1",
+    "chai": "^4.2.0",
+    "sinon-chai": "^3.5.0"
+  }
+}

@@ -1,0 +1,248 @@
+swagger: '2.0'
+info:
+  description: 'Todo Application'
+  version: '0.0.1'
+  title: 'Todo Application'
+  contact:
+    email: 'gweaja@yahoo.com'
+
+paths:
+
+  /todos:
+    get:
+      tags:
+      - "Todo"
+      summary: "Show todo list"
+      consumes:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful"
+          schema:
+            $ref: "#/definitions/listTodo_body"
+        404:
+          description: "Data Not Found"
+          schema:
+            $ref: "#/definitions/notFoundResponse_body"
+
+  /todo:
+    post:
+      tags:
+      - "Todo"
+      summary: "Post todo data"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "Body"
+          schema:
+            $ref: "#/definitions/insertTodoRequest_body"
+      responses:
+        200:
+          description: "Successful"
+          schema:
+            $ref: "#/definitions/actionTodo_body"
+        500:
+          description: "Data Not Found"
+          schema:
+            $ref: "#/definitions/internal_error_response_body"
+
+  /todo/{id}:
+    get:
+      tags:
+      - "Todo"
+      summary: "Detail data todo"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: string
+            example: "59a7c382-c0c0-11ea-9008-00ff3019b166"
+      responses:
+        200:
+          description: "Successful"
+          schema:
+            $ref: "#/definitions/detailTodo_body"
+        404:
+          description: "Data Not Found"
+          schema:
+            $ref: "#/definitions/notFoundResponse_body"
+    patch:
+      tags:
+      - "Todo"
+      summary: "Update data todo"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: string
+            example: "59a7c382-c0c0-11ea-9008-00ff3019b166"
+        - in: "body"
+          name: "Body"
+          schema:
+            $ref: "#/definitions/updateTodoRequest_body"
+      responses:
+        200:
+          description: "Successful"
+          schema:
+            $ref: "#/definitions/actionTodo_body"
+        500:
+          description: "Internal Error"
+          schema:
+            $ref: "#/definitions/internal_error_response_body"
+    delete:
+      tags:
+      - "Todo"
+      summary: "Remove data todo"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: string
+            example: "59a7c382-c0c0-11ea-9008-00ff3019b166"
+      responses:
+        200:
+          description: "Successful"
+          schema:
+            $ref: "#/definitions/actionTodo_body"
+        500:
+          description: "Internal Error"
+          schema:
+            $ref: "#/definitions/internal_error_response_body"
+
+definitions:
+  listTodo_body:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        todo_id:
+          type: "string"
+          example: "d8340602-c0c0-11ea-a980-00ff3019b166"
+        todo_title:
+          type: "string"
+          example: "Code Test Node.js"
+        todo_content:
+          type: "string"
+          example: "Do the code test using Node.js"
+        todo_done:
+          type: "boolean"
+          example: false
+        todo_created:
+          type: "string"
+          example: "2020-07-08T02:15:08.170Z"
+        todo_updated:
+          type: "string"
+          example: "2020-07-08T02:15:08.170Z"
+
+  detailTodo_body:
+    type: "object"
+    properties:
+      todo_id:
+        type: "string"
+        example: "d8340602-c0c0-11ea-a980-00ff3019b166"
+      todo_title:
+        type: "string"
+        example: "Code Test Node.js"
+      todo_content:
+        type: "string"
+        example: "Do the code test using Node.js"
+      todo_done:
+        type: "boolean"
+        example: false
+      todo_created:
+        type: "string"
+        example: "2020-07-08T02:15:08.170Z"
+      todo_updated:
+        type: "string"
+        example: "2020-07-08T02:15:08.170Z"
+
+  updateTodoRequest_body:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        example: "Code Test Node.js"
+      content:
+        type: "string"
+        example: "Do the code test using Node.js"
+      done:
+        type: "boolean"
+        example: false
+
+  insertTodoRequest_body:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        example: "Code Test Node.js"
+      content:
+        type: "string"
+        example: "Do the code test using Node.js"
+
+  actionTodo_body:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "SUCCESS"
+      statusCode:
+        type: "integer"
+        example: 200
+
+  bad_request_response_body:
+    type: "object"
+    properties:
+      statusCode:
+        type: "integer"
+        example: 400
+      error:
+        type: "string"
+        example: "Bad Request"
+      code:
+        type: "string"
+        example: "BAD_USER_INPUT"
+      message:
+        type: "string"
+        example: "Bad user input"
+
+  internal_error_response_body:
+    type: "object"
+    properties:
+      statusCode:
+        type: "integer"
+        example: 500
+      error:
+        type: "string"
+        example: "Internal Error"
+      code:
+        type: "string"
+        example: "INTERNAL_SERVER_ERROR"
+      message:
+        type: "string"
+        example: "Internal Error"
+
+  notFoundResponse_body:
+    type: "object"
+    properties:
+      statusCode:
+        type: "integer"
+        example: 404
+      error:
+        type: "string"
+        example: "Not Found Error"
+      code:
+        type: "string"
+        example: "DATA_NOT_FOUND"
+      message:
+        type: "string"
+        example: "Data is not exist"
