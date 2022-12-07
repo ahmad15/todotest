@@ -18,7 +18,7 @@
     "bunyan": "^1.8.14",
     "dotenv": "^8.2.0",
     "es6-error": "^4.1.1",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "joi": "^14.3.1",
     "pg": "^8.2.1",
     "swagger-ui-express": "^4.1.4",
