@@ -1,4 +1,5 @@
 {
   "title": "Code Test Node.js",
-  "content": "Do the code test using Node.js"
+  "description": "Do the code test using Node.js",
+  "deadline": "2020-07-08"
 }

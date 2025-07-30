@@ -1,5 +1,6 @@
 const {
   TodoDbConnector,
+  UserDbConnector
 } = require('../connectors');
 
 /**
@@ -11,6 +12,11 @@ const {
  */
 const dbConnector = (req, res, next) => {
   res.locals.todoDbConnector = new TodoDbConnector({
+    db: req.app.locals.db,
+    logger: req.app.locals.logger
+  });
+
+  res.locals.userDbConnector = new UserDbConnector({
     db: req.app.locals.db,
     logger: req.app.locals.logger
   });

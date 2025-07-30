@@ -5,10 +5,13 @@ const createTodoSchema = Joi.object({
     .required()
     .description('Title')
     .example('Test Code'),
-  content: Joi.string()
+  description: Joi.string()
     .required()
-    .description('Content')
-    .example('Do the test code')
+    .description('Description')
+    .example('Do the test code'),
+  deadline: Joi.date()
+    .required()
+    .description('Deadline')
 }).label('crateTodo');
 
 module.exports = createTodoSchema;

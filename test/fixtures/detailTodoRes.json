@@ -1,8 +1,9 @@
 {
-  "todo_id": "d8340602-c0c0-11ea-a980-00ff3019b166",
-  "todo_title": "Code Test Node.js",
-  "todo_content": "Do the code test using Node.js",
-  "todo_done": false,
-  "todo_created": "2020-07-08T02:15:08.170Z",
-  "todo_updated": "2020-07-08T02:15:08.170Z"
+  "id": "d8340602-c0c0-11ea-a980-00ff3019b166",
+  "title": "Code Test Node.js",
+  "description": "Do the code test using Node.js",
+  "deadline": "2020-07-08",
+  "done": false,
+  "created": "2020-07-08T02:15:08.170Z",
+  "updated": "2020-07-08T02:15:08.170Z"
 }

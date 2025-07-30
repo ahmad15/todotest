@@ -1,4 +1,5 @@
 const http = require('http');
+const path = require('path');
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 
@@ -37,6 +38,8 @@ class Server {
     if (this.routes && this.routes.length) {
       this.routes.forEach(route => this.app.use(route));
     }
+
+    this.app.use('/images', express.static('images'));
 
     this.http = http.createServer(this.app);
   }

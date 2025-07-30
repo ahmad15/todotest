@@ -1,5 +1,6 @@
 const {
-  Todo
+  Todo,
+  User
 } = require('../services');
 
 /**
@@ -10,8 +11,15 @@ const {
  * @returns {promise} - return next function
  */
 const services = (req, res, next) => {
+  const { config } = req.app.locals;
+
   res.locals.todoService = new Todo({
     todoDbConnector: res.locals.todoDbConnector
+  });
+
+  res.locals.userService = new User({
+    config,
+    userDbConnector: res.locals.userDbConnector
   });
 
   return next();

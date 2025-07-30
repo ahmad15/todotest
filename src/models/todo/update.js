@@ -5,10 +5,13 @@ const updateTodoSchema = Joi.object({
     .required()
     .description('Title')
     .example('Test Code'),
-  content: Joi.string()
+  description: Joi.string()
     .required()
-    .description('Content')
+    .description('Description')
     .example('Do the test code'),
+  deadline: Joi.date()
+    .required()
+    .description('Deadline'),
   done: Joi.boolean()
     .required()
     .description('Done')

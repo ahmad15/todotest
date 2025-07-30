@@ -1,18 +1,20 @@
 [
   {
-    "todo_id": "d8340602-c0c0-11ea-a980-00ff3019b166",
-    "todo_title": "Code Test Node.js",
-    "todo_content": "Do the code test using Node.js",
-    "todo_done": false,
-    "todo_created": "2020-07-08T02:15:08.170Z",
-    "todo_updated": "2020-07-08T02:15:08.170Z"
+    "id": "d8340602-c0c0-11ea-a980-00ff3019b166",
+    "title": "Code Test Node.js",
+    "description": "Do the code test using Node.js",
+    "deadline": "2020-07-08",
+    "done": false,
+    "created": "2020-07-08T02:15:08.170Z",
+    "updated": "2020-07-08T02:15:08.170Z"
   },
   {
-    "todo_id": "59a7c382-c0c0-11ea-9008-00ff3019b166",
-    "todo_title": "Code Test Node.js",
-    "todo_content": "Do the code test using Node.js and adding unit test",
-    "todo_done": true,
-    "todo_created": "2020-07-08T02:11:35.851Z",
-    "todo_updated": "2020-07-08T02:43:14.903Z"
+    "id": "59a7c382-c0c0-11ea-9008-00ff3019b166",
+    "title": "Code Test Node.js",
+    "description": "Do the code test using Node.js and adding unit test",
+    "deadline": "2020-07-08",
+    "done": true,
+    "created": "2020-07-08T02:11:35.851Z",
+    "updated": "2020-07-08T02:43:14.903Z"
   }
 ]
