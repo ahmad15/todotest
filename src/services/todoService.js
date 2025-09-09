@@ -1,4 +1,5 @@
 const moment = require('moment');
+const fs = require('fs');
 
 const { throwIfMissing } = require('../helpers/throwIf');
 const CustomError = require('../helpers/customError');
@@ -21,13 +22,17 @@ class Todo {
 
   /**
    * getTodo
-   * @param {string} sort - sorting
+   * @param {object} params - parameters
+   * @param {string} params.status - filter by status delimeter by comma
+   * @param {string} params.sort - sorting
+   * @param {string} params.content - content filter
    * @returns {object} object result
    * if update additional info is success
    *
    */
-  async getListTodo(sort) {
-    const todos = await this.todoDbConnector.getListTodo(sort);
+  async getListTodo(params) {
+    const todos = await this.todoDbConnector.getListTodo(params);
+
     if (todos.rows.length > 0) {
       return todos.rows.map((row) => {
         return {
@@ -36,6 +41,7 @@ class Todo {
           deadline: moment(row.deadline).format('YYYY-MM-DD')};
       });
     }
+
     throw new CustomError('No Todo found', 'DATA_NOT_FOUND', 404);
   }
 
@@ -49,14 +55,16 @@ class Todo {
    */
   async getDetailTodo(id) {
     const todos = await this.todoDbConnector.getDetailTodo(id);
+
     if (todos.rows.length > 0) {
       const todo = todos.rows[0];
+
       return {
         ...todo,
-        id: todo.todoid,
         deadline: moment(todo.deadline).format('YYYY-MM-DD')
       };
     }
+
     throw new CustomError('No Todo found', 'DATA_NOT_FOUND', 404);
   }
 
@@ -71,6 +79,7 @@ class Todo {
     const todo = await this.todoDbConnector.insertTodo(payload);
     if (todo.rowCount > 0) {
       await this.todoDbConnector.insertTodoImage({...payload, todoid: todo.todoid});
+
       return {
         code: 'SUCCESS',
         message: 'Successfuly insert todo data'
@@ -91,7 +100,14 @@ class Todo {
     const todos = await this.todoDbConnector.updateTodo(id, payload);
     if (todos.rowCount > 0) {
       if(payload.filename !== undefined) {
-        await this.todoDbConnector.updateTodoImage(id, payload);
+        const todo = await this.todoDbConnector.getDetailTodo(id);
+
+        if (todo.rows[0]?.snapshotpath) {
+          fs.unlinkSync(`./${todo.rows[0]?.snapshotpath}`)
+          await this.todoDbConnector.updateTodoImage(id, payload);
+        } else {
+          await this.todoDbConnector.insertTodoImage({...payload, todoid: id});
+        }
       }
 
       return {
@@ -110,15 +126,20 @@ class Todo {
    *
    */
   async deleteTodo(id) {
+    const todo = await this.todoDbConnector.getDetailTodo(id);
     const todos = await this.todoDbConnector.deleteTodo(id);
+
     if (todos) {
       await this.todoDbConnector.deleteTodoImage(id);
+      // delete file if exists
+      todo.rows[0]?.snapshotpath && fs.unlinkSync(`./${todo.rows[0]?.snapshotpath}`);
 
       return {
         code: 'SUCCESS',
         message: 'Successfuly remove todo data'
       };
     }
+
     throw new CustomError('Something error', 'INTERNAL_SERVER_ERROR', 500);
   }
 

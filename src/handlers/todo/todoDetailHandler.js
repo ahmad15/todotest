@@ -7,6 +7,7 @@
 const todoDetailHandler = async (req, res) => {
   const { id } = req.params;
   const detailTodo = await res.locals.todoService.getDetailTodo(id);
+
   return res.send(detailTodo);
 };
 

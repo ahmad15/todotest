@@ -2,18 +2,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { createHandler } = require('../../../handlers/common');
 const {
-  todoUpdateHandler: handler
-} = require('../../../handlers/todo');
+  userUpdateHandler: handler
+} = require('../../../handlers/user');
 const authentication = require('../../../middlewares/authentication');
-const upload = require('../../../middlewares/upload');
 
 const validateSchema = require('./validateSchema');
 
 const router = express.Router();
 
 router.patch(
-  '/todo/:id',
-  upload,
+  '/user/profile/:id',
   authentication,
   validateSchema,
   createHandler(handler)

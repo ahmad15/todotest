@@ -1,6 +1,7 @@
 const http = require('http');
 const path = require('path');
 const express = require('express');
+const morganBody = require("morgan-body")
 const swaggerUi = require('swagger-ui-express');
 
 const { Logger } = require('../helpers');
@@ -23,6 +24,8 @@ class Server {
     this.app.locals.logger = this.logger;
     this.app.locals.httpRequests = http;
 
+    morganBody(this.app, { stream: { write: (message) => this.logger.info(message.trim()) } });
+
     if (this.middlewares && this.middlewares.pre && this.middlewares.pre.length) {
       this.middlewares.pre.forEach(middleware => this.app.use(middleware));
     }
@@ -32,7 +35,7 @@ class Server {
     }
 
     if (this.docs) {
-      this.app.use('/documentation', swaggerUi.serve, swaggerUi.setup(this.docs));
+      this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(this.docs));
     }
 
     if (this.routes && this.routes.length) {

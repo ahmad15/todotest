@@ -12,10 +12,13 @@ const updateTodoSchema = Joi.object({
   deadline: Joi.date()
     .required()
     .description('Deadline'),
-  done: Joi.boolean()
+  status: Joi.string()
     .required()
+    .description('Status')
+    .example('todo'),
+  done: Joi.boolean()
     .description('Done')
     .example(true)
-}).label('crateTodo');
+}).label('updateTodo');
 
 module.exports = updateTodoSchema;

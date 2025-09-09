@@ -6,7 +6,7 @@ const {
   todoCreateHandler: handler
 } = require('../../../handlers/todo');
 const authentication = require('../../../middlewares/authentication');
-const imageUpload = require('../../../middlewares/multer');
+const upload = require('../../../middlewares/upload');
 
 const validateSchema = require('./validateSchema');
 
@@ -14,9 +14,8 @@ const router = express.Router();
 
 router.post(
   '/todo',
-  imageUpload.single('snapshot'),
+  upload,
   authentication,
-  bodyParser.json(),
   validateSchema,
   createHandler(handler)
 );

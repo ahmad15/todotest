@@ -1,5 +1,5 @@
-const Todo = require('./todo');
-const User = require('./user');
+const Todo = require('./todoService');
+const User = require('./userService');
 
 module.exports = {
   Todo,

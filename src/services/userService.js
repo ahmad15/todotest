@@ -50,9 +50,11 @@ class User {
    */
   async getDetailUser(id) {
     const users = await this.userDbConnector.getDetailUser(id);
+
     if (users.rows.length > 0) {
       return users.rows[0];
     }
+
     throw new CustomError('No User found', 'DATA_NOT_FOUND', 404);
   }
 
@@ -69,7 +71,7 @@ class User {
     const { jwt: { expired, secret } } = this.config;
     const users = await this.userDbConnector.getAuthUser(email);
 
-    if (users.rows.length > 0) {
+    if (users?.rows.length > 0) {
       const user = users.rows[0];
       const passwordIsValid = bcrypt.compareSync(password, user.password);
 
@@ -86,6 +88,7 @@ class User {
         tokenId: token
       };
     }
+
     throw new CustomError('No User found', 'DATA_NOT_FOUND', 404);
   }
 
@@ -98,9 +101,14 @@ class User {
    */
   async insertUser(payload) {
     const users = await this.userDbConnector.insertUser(payload);
+
     if (users.rowCount > 0) {
-      return new CustomError('Successfuly insert todo data', 'SUCCESS', 200);
+      return {
+        code: 'SUCCESS',
+        message: 'Successfuly insert user data'
+      };
     }
+
     throw new CustomError('Something error', 'INTERNAL_SERVER_ERROR', 500);
   }
 
@@ -112,11 +120,39 @@ class User {
    * @returns {object} object result
    *
    */
-  async updateUser(id, payload) {
-    const users = await this.userDbConnector.updateUser(id, payload);
-    if (users.rowCount > 0) {
-      return new CustomError('Successfuly update todo data', 'SUCCESS', 200);
+  async updateUserProfile(id, payload) {
+    const { jwt: { expired, secret } } = this.config;
+
+    if (payload?.oldPassword) {
+      const users = await this.userDbConnector.getDetailUser(id);
+      const user = users.rows[0];
+      const oldPasswordIsValid = bcrypt.compareSync(payload.oldPassword, user.password);
+
+      if(!oldPasswordIsValid) {
+        throw new CustomError('Old password does not match', 'DATA_FAILED', 401);
+      }
     }
+
+    if (payload?.password) {
+      const salt = bcrypt.genSaltSync(10);
+      payload.password = bcrypt.hashSync(payload.password, salt);
+    }
+
+    const result = await this.userDbConnector.updateUser(id, payload);
+
+    if (result.rowCount > 0) {
+      // create a token
+      var token = jwt.sign({ id, email: payload.email, name: payload.name }, secret, {
+        expiresIn: parseInt(expired)
+      });
+
+      return {
+        code: 'SUCCESS',
+        tokenId: token,
+        message: 'Successfuly update profile data'
+      };
+    }
+
     throw new CustomError('Something error', 'INTERNAL_SERVER_ERROR', 500);
   }
 
@@ -129,9 +165,14 @@ class User {
    */
   async deleteUser(id) {
     const users = await this.userDbConnector.deleteUser(id);
+
     if (users) {
-      return new CustomError('Successfuly remove todo data', 'SUCCESS', 200);
+      return {
+        code: 'SUCCESS',
+        message: 'Successfuly remove user data'
+      };
     }
+
     throw new CustomError('Something error', 'INTERNAL_SERVER_ERROR', 500);
   }
 

@@ -19,7 +19,8 @@ const config = {
     whitelist: Env.getString('URL_WHITELIST', process.env, true)
   },
   images: {
-    whitelist: Env.getString('MIMETYPE_IMAGELIST', process.env, true)
+    whitelist: Env.getString('MIMETYPE_IMAGELIST', process.env, true),
+    maxFileSize: Env.getInteger('MAX_FILE_SIZE', process.env, true)
   },
   resources: {
     db: {

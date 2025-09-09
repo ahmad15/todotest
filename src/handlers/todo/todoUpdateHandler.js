@@ -6,13 +6,18 @@
  */
 const todoUpdateHandler = async (req, res) => {
   const { id } = req.params;
-  const { filename, mimetype, size } = req.file;
-  const filepath = req.file.path;
-  const payload = {
-    ...req.body,
-    filename, mimetype, size,
-    filepath
-  };
+  let payload = req.body;
+
+  if (req.file) {
+    const { filename, mimetype, size } = req.file;
+    const filepath = req.file.path;
+
+    payload = {
+      ...payload,
+      filename, mimetype, size,
+      filepath
+    };
+  }
 
   const updateTodo = await res.locals.todoService.updateTodo(id, payload);
 

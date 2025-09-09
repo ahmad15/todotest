@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "clear; nodemon index.js | bunyan",
+    "dev:debug": "nodemon --inspect index.js",
     "test": "LOG_LEVEL=fatal mocha ./test --recursive",
     "test:coverage": "LOG_LEVEL=fatal nyc _mocha ./test --recursive"
   },
@@ -23,6 +24,7 @@
     "express": "^4.18.2",
     "joi": "^14.3.1",
     "jsonwebtoken": "^9.0.0",
+    "morgan-body": "^2.6.9",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.2.1",
     "swagger-ui-express": "^4.6.3",

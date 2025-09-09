@@ -41,12 +41,14 @@ class UserDbConnector {
    */
   async getDetailUser(id) {
     let detail;
+
     try {
       const query = util.promisify(this.db.query).bind(this.db);
-      detail = await query(`SELECT * FROM ${this.table} WHERE id = '${id}'`);
+      detail = await query(`SELECT id, email, password,name, created, updated FROM ${this.table} WHERE id = '${id}'`);
     } catch (error) {
       this.logger.error(`Error get detail User data ${error}`);
     }
+
     return detail;
   }
 
@@ -57,12 +59,14 @@ class UserDbConnector {
    */
   async getAuthUser(email) {
     let detail;
+
     try {
       const query = util.promisify(this.db.query).bind(this.db);
       detail = await query(`SELECT * FROM ${this.table} WHERE email = '${email}'`);
     } catch (error) {
       this.logger.error(`Error get Auth User data ${error}`);
     }
+
     return detail;
   }
 
@@ -92,14 +96,22 @@ class UserDbConnector {
   async updateUser(id, payload) {
     let update;
     const now = moment().toDate();
+
     try {
       const query = util.promisify(this.db.query).bind(this.db);
       update = await query(`UPDATE ${this.table}
-        SET email = $1, password = $2, name = $3, updated = $4 WHERE id = $5`,
-        [payload.email, payload.password, payload.name, now, id]);
+        SET email = $1, name = $2, updated = $3 WHERE id = $4`,
+        [payload.email, payload.name, now, id]);
+
+      if (payload?.password) {
+        await query(`UPDATE ${this.table}
+          SET password = $1 WHERE id = $2`,
+          [payload.password, id]);
+      }
     } catch (error) {
       this.logger.error(`Error update User data ${error}`);
     }
+
     return update;
   }
 

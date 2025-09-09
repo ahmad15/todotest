@@ -14,6 +14,7 @@ const createHandler = (handler) => {
     try {
       await handler(req, res);
     } catch (err) {
+      // console.log(err);
       error = err;
       logger.error(`createHandler: handling error: ${err}`);
 

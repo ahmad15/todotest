@@ -5,13 +5,18 @@
  * @param {function} next - next function
  */
 const todoCreateHandler = async (req, res) => {
-  const { filename, mimetype, size } = req.file;
-  const filepath = req.file.path;
-  const payload = {
-    ...req.body,
-    filename, mimetype, size,
-    filepath
-  };
+  let payload = req.body;
+
+  if (req.file) {
+    const { filename, mimetype, size } = req.file;
+    const filepath = req.file.path;
+
+    payload = {
+      ...payload,
+      filename, mimetype, size,
+      filepath
+    };
+  }
 
   const insertTodo = await res.locals.todoService.insertTodo(payload);
 

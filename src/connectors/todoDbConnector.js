@@ -3,7 +3,7 @@ const moment = require('moment');
 const { v4 } = require('uuid');
 
 const { throwIfMissing } = require('../helpers/throwIf');
-const { isEmptyString } = require('../helpers/conditionals');
+const STATUS = require('../constants/status');
 
 /**
  * Todo Model - class
@@ -23,12 +23,42 @@ class TodoDbConnector {
 
   /**
    * get list Todo data
-   * @param {string} sort - sort by deadline
+   * @param {object} params - parameters
+   * @param {string} params.status - filter by status delimeter by comma
+   * @param {string} params.sort - sorting
+   * @param {string} params.content - content filter
    * @returns {object} - return list data todo
    */
-  async getListTodo(sort) {
+  async getListTodo(params) {
+    const { status, sort, content, deadlineFrom, deadlineTo } = params;
     let list;
-    const sorting = isEmptyString(sort) ? 'desc' : sort;
+    const sorting = sort || 'asc';
+    const splitStatus = status ? status.split(',') : [];
+
+    let filterStatus = content ? `AND (title ILIKE '%${content}%' OR description ILIKE '%${content}%')` : '';
+    filterStatus += deadlineFrom ? ` AND deadline >= '${moment(deadlineFrom).format('YYYY-MM-DD')}'` : '';
+    filterStatus += deadlineTo ? ` AND deadline <= '${moment(deadlineTo).format('YYYY-MM-DD')}'` : '';
+
+    if (splitStatus.length > 0) {
+      let statusJoin = splitStatus.map(status => `'${status}'`);
+      const isDone = splitStatus.includes(STATUS.DONE);
+
+      if (isDone) {
+        statusJoin = statusJoin.filter(status => status !== `'${STATUS.DONE}'`);
+      }
+
+      if (statusJoin.length > 0) {
+        filterStatus = `AND status IN (${statusJoin.join(',')})`;
+      }
+
+      if (isDone && statusJoin.length > 0) {
+        filterStatus = `${filterStatus} OR done = true`;
+      } else if (isDone && statusJoin.length === 0) {
+        filterStatus = `AND done = true`;
+      } else {
+        filterStatus = `${filterStatus} AND done = false`;
+      }
+    }
 
     try {
       const query = util.promisify(this.db.query).bind(this.db);
@@ -38,10 +68,12 @@ class TodoDbConnector {
           ti.filepath as snapshotpath
         FROM ${this.table} td
         LEFT JOIN todoimages ti ON ti.todoid = td.id
+        WHERE 1=1 ${filterStatus}
         ORDER BY deadline ${sorting}`);
     } catch (error) {
       this.logger.error(`Error get list Todo data ${error}`);
     }
+
     return list;
   }
 
@@ -78,8 +110,8 @@ class TodoDbConnector {
     try {
       const query = util.promisify(this.db.query).bind(this.db);
       insert = await query(`INSERT INTO ${this.table}
-        (id, title, description, deadline, created) VALUES ($1, $2, $3, $4, $5)`,
-        [todoid, payload.title, payload.description, payload.deadline, now]);
+        (id, title, description, deadline, status, created) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [todoid, payload.title, payload.description, payload.deadline, payload.status, now]);
     } catch (error) {
       this.logger.error(`Error insert Todo data ${error}`);
     }
@@ -115,8 +147,8 @@ class TodoDbConnector {
     try {
       const query = util.promisify(this.db.query).bind(this.db);
       update = await query(`UPDATE ${this.table}
-        SET title = $1, description = $2, deadline = $3, done = $4, updated = $5 WHERE id = $6`,
-        [payload.title, payload.description, payload.deadline, payload.done, now, id]);
+        SET title = $1, description = $2, deadline = $3, status = $4, done = $5, updated = $6 WHERE id = $7`,
+        [payload.title, payload.description, payload.deadline, payload.status, payload.done, now, id]);
     } catch (error) {
       this.logger.error(`Error update Todo data ${error}`);
     }
@@ -163,12 +195,14 @@ class TodoDbConnector {
    */
   async deleteTodoImage(id) {
     let remove;
+
     try {
       const query = util.promisify(this.db.query).bind(this.db);
       remove = await query(`DELETE FROM todoimages WHERE todoid = '${id}'`);
     } catch (error) {
       this.logger.error(`Error update Todo Image data ${error}`);
     }
+
     return remove;
   }
 }

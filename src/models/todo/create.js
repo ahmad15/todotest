@@ -11,7 +11,10 @@ const createTodoSchema = Joi.object({
     .example('Do the test code'),
   deadline: Joi.date()
     .required()
-    .description('Deadline')
+    .description('Deadline'),
+  status: Joi.string()
+    .required()
+    .description('Status')
 }).label('crateTodo');
 
 module.exports = createTodoSchema;

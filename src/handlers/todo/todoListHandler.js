@@ -5,8 +5,8 @@
  * @param {function} next - next function
  */
 const todoListHandler = async (req, res) => {
-  const { sort } = req.query;
-  const listTodo = await res.locals.todoService.getListTodo(sort);
+  const listTodo = await res.locals.todoService.getListTodo(req.query);
+
   return res.send(listTodo);
 };
 
